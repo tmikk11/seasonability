@@ -89,7 +89,7 @@ def plot(day, high, hist):
     ax.set_xlabel("Daily High (F)")
     start = window['date'].min()
     end = window['date'].max()
-    ax.set_title("Daily Highs for %d/%d to %d/%d (This was automated)" %(start.month,start.day,end.month,end.day))
+    ax.set_title("Daily Highs for %d/%d to %d/%d" %(start.month,start.day,end.month,end.day))
     plt.savefig('test.png')
 
 
