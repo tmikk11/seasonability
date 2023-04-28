@@ -24,6 +24,6 @@ jobs:
         run: python daily_highs.py
         
       - name: Commit graphs
-        uses: tmikk11/weather-analytics@v1
+        uses: tmikk11/weather-analytics@v0
         with:
           commit_message: Update graph
