@@ -1,6 +1,6 @@
 on:
  schedule:
-   - cron: "0 8 * * *"
+   - cron: "*/5 * * * *"
 
 name: Seattle weather update
 
