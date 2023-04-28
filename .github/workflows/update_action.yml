@@ -19,17 +19,10 @@ jobs:
         with:
           python-version: '3.9' # install the python version needed
 
-
       - name: execute py script
         run: python daily_highs.py
-      - name: Commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
         
       - name: Commit graphs
-        uses: ad-m/github-push-action@master
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           commit_message: Update graph
