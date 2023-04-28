@@ -22,8 +22,14 @@ jobs:
 
       - name: execute py script
         run: python daily_highs.py
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
         
       - name: Commit graphs
-        uses: tmikk11/weather-analytics@v0
+        uses: ad-m/github-push-action@master
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           commit_message: Update graph
