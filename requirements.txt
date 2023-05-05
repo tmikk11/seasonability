@@ -1,6 +1,5 @@
 pandas
 scipy
-numpy
 matplotlib
 datetime 
 math
