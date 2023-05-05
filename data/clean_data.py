@@ -1,15 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[30]:
-
-
 # packages
 import pandas as pd
-
-
-# In[31]:
-
 
 # seatac_noaa.csv is data from https://www.ncdc.noaa.gov/cdo-web/
 # this notebook cleans data, saves as seatac_cleaned.csv for past 30 years of data
@@ -37,10 +27,3 @@ data['prcp'].fillna(value=0, inplace=True)
 # Saving last 30 years to dataframe
 data = data[data['year'] > 1992]
 data.to_csv('seatac_cleaned.csv', index=False)
-
-
-# In[ ]:
-
-
-
-
