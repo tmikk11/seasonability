@@ -65,4 +65,4 @@ forecast = pd.read_json('https://api.open-meteo.com/v1/forecast?latitude=47.4431
 day = datetime.strptime(forecast['daily']['time'][0], '%Y-%m-%d').timetuple().tm_yday
 # rounded accourding to https://www.nws.noaa.gov/directives/sym/pd01013002curr.pdf
 high = math.floor(forecast['daily']['temperature_2m_max'][0] + 0.5)
-plot(day, high, pd.read_csv('seatac_cleaned.csv'))
+plot(day, high, pd.read_csv('data/seatac_cleaned.csv'))
