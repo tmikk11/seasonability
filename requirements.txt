@@ -2,4 +2,3 @@ pandas
 scipy
 matplotlib
 datetime 
-math
