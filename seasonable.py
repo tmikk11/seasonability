@@ -1,19 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[70]:
-
-
 # packages
 import pandas as pd
 from scipy import stats
 import matplotlib.pyplot as plt
 from datetime import datetime
 import math
-
-
-# In[71]:
-
 
 # given day x, returns dataframe of all tmin and tmix of 15 day window centered around x in past 30 years
 def get_window(x, historical):
@@ -26,10 +16,7 @@ def get_window(x, historical):
 
     return window
 
-
-# In[76]:
-
-
+# create and save the seasonable plot
 def plot(day, high, hist):
     # Getting info we need
     window = get_window(day, hist)
@@ -73,20 +60,9 @@ def plot(day, high, hist):
     ax.set_title("Daily Highs for %d/%d to %d/%d" %(start.month,start.day,end.month,end.day))
     plt.savefig('seasonable.png', bbox_inches='tight')
 
-
-# In[77]:
-
-
 # using open-meteo.com api for seatac coordinates
 forecast = pd.read_json('https://api.open-meteo.com/v1/forecast?latitude=47.4431&longitude=-122.302&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles')
 day = datetime.strptime(forecast['daily']['time'][0], '%Y-%m-%d').timetuple().tm_yday
 # rounded accourding to https://www.nws.noaa.gov/directives/sym/pd01013002curr.pdf
 high = math.floor(forecast['daily']['temperature_2m_max'][0] + 0.5)
 plot(day, high, pd.read_csv('seatac_cleaned.csv'))
-
-
-# In[ ]:
-
-
-
-
