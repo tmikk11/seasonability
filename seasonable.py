@@ -61,7 +61,7 @@ def plot(day, high, hist):
     plt.savefig('seasonable.png', bbox_inches='tight')
 
 # using open-meteo.com api for seatac coordinates
-forecast = pd.read_json('https://api.open-meteo.com/v1/forecast?latitude=47.4431&longitude=-122.302&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles')
+forecast = pd.read_json('https://api.open-meteo.com/v1/forecast?latitude=47.4446&longitude=-122.3144&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles')
 day = datetime.strptime(forecast['daily']['time'][0], '%Y-%m-%d').timetuple().tm_yday
 # rounded accourding to https://www.nws.noaa.gov/directives/sym/pd01013002curr.pdf
 high = math.floor(forecast['daily']['temperature_2m_max'][0] + 0.5)
