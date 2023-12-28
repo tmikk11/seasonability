@@ -10,9 +10,9 @@ def get_window(x, historical):
     window = historical[(historical['dayyear'] >= x-7) & (historical['dayyear'] <= x+7)                & (historical['year'] > 1991)][['date','tmax','tmin','prcp']]
     # wrapping about for beginning/end of year (leap years get extra day for window)
     if x <= 7:
-        window = pd.concat(window, historical[(historical['dayyear'] >= 360-x) & (historical['year'] > 1991)][['date','tmax','tmin','prcp']])
+        window = pd.concat([window, historical[(historical['dayyear'] >= 360-x) & (historical['year'] > 1991)][['date','tmax','tmin','prcp']]])
     elif x >= 360:
-        window = pd.concat(window, historical[(historical['dayyear'] <= x-358) & (historical['year'] > 1991)][['date','tmax','tmin','prcp']])
+        window = pd.concat([window, historical[(historical['dayyear'] <= x-358) & (historical['year'] > 1991)][['date','tmax','tmin','prcp']]])
 
     return window
 
@@ -30,7 +30,7 @@ def plot(day, high, hist):
     b = list(range(window.tmax.min(), max(window.tmax.max(), high)+2))
     # Colormap for the matches
     if high > window.tmax.max():
-        w = pd.concat(window.tmax, pd.Series(high))
+        w = pd.concat([window.tmax, pd.Series(high)])
     else:
         w = window.tmax
     n, bins, patches = ax.hist(w, bins=b, alpha=1, align='left', facecolor='blue', edgecolor='white', linewidth=0.5)
