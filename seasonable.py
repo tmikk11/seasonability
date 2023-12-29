@@ -55,8 +55,8 @@ def plot(day, high, hist):
     ax.set_ylabel("Occurrences in Last 30 Years")
     ax.set_xlabel("Daily High (F)")
     window['date'] = pd.to_datetime(window['date'])
-    start = window['date'].min()
-    end = window['date'].max()
+    start = window['date'].iloc[0]
+    end = window['date'].iloc[-1]
     ax.set_title("Daily Highs for %d/%d to %d/%d" %(start.month,start.day,end.month,end.day))
     plt.savefig('seasonable.png', bbox_inches='tight')
 
