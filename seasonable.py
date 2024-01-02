@@ -6,20 +6,40 @@ from datetime import datetime
 import math
 
 # given day x, returns dataframe of all tmin and tmix of 15 day window centered around x in past 30 years
-def get_window(x, historical):
-    window = historical[(historical['dayyear'] >= x-7) & (historical['dayyear'] <= x+7)                & (historical['year'] > 1991)][['date','tmax','tmin','prcp']]
-    # wrapping about for beginning/end of year (leap years get extra day for window)
-    if x <= 7:
-        window = pd.concat([window, historical[(historical['dayyear'] >= 360-x) & (historical['year'] > 1991)][['date','tmax','tmin','prcp']]])
-    elif x >= 360:
-        window = pd.concat([window, historical[(historical['dayyear'] <= x-358) & (historical['year'] > 1991)][['date','tmax','tmin','prcp']]])
-
-    return window
+def get_window(year, mon, mday, hist):
+    # updated to work with leap years
+    if (year % 4) == 0:
+        m_days = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    else:
+        m_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        
+    # getting window of dates
+    window = hist[(hist['month'] == mon) & (hist['day'] >= mday-7) & (hist['day'] <= mday+7)]
+    start = window['date'].min()
+    end = window['date'].max()
+    # wrapping for beginning of month
+    if mday <= 7:
+        if mon == 1:
+            pmon = 12
+        else:
+            pmon = mon-1
+        window = pd.concat([window, hist[(hist['month'] == pmon) & (hist['day'] >= m_days[pmon-1]-(7-mday))]])
+        start = window[window['month'] == pmon]['date'].min()
+    # wrapping for end of month
+    elif mday > (m_days[mon-1]-7):
+        if mon == 12:
+            nmon = 1
+        else:
+            nmon = mon+1
+        window = pd.concat([window, hist[(hist['month'] == nmon) & (hist['day'] <= 7-(m_days[mon-1]-mday))]])
+        end = window[window['month'] == mon+1]['date'].max()
+    
+    return window, datetime.strptime(start, "%Y-%m-%d"), datetime.strptime(end, "%Y-%m-%d")
 
 # create and save the seasonable plot
-def plot(day, high, hist):
+def plot(year, mon, mday, high, hist):
     # Getting info we need
-    window = get_window(day, hist)
+    window, start, end = get_window(year, mon, mday, hist)
 
     # Setting up the plot
     fig, ax = plt.subplots(figsize=(4.8, 3.6), dpi=300)
@@ -38,31 +58,35 @@ def plot(day, high, hist):
         if bins[i] == high:
             patch.set_facecolor('red')
         else:
-            patch.set_facecolor(plt.cm.viridis(stats.stats.percentileofscore(window.tmax, bins[i], 'mean')/100))
+            patch.set_facecolor(plt.cm.viridis(stats.stats.percentileofscore(w, bins[i], 'mean')/100))
 
     # Fixing plot limites
     min_ylim, max_ylim = plt.ylim()
 
     # Text stats
     alignment = max(high, window.tmax.max())+1
-    ax.text(alignment, max_ylim*0.85, 'Today\'s High: {:.0f}'.format(high), ha='right', fontsize=8)
-    ax.text(alignment, max_ylim*0.80, 'Percentile: {:.1f}'.format(stats.stats.percentileofscore(window.tmax, high, 'mean')), ha='right', fontsize=8)
-    ax.text(alignment, max_ylim*0.70, 'Average High: {:.1f}'.format(window.tmax.mean()), ha='right', fontsize=8)
-    ax.text(alignment, max_ylim*0.65, 'All Time High: {:.0f}'.format(window.tmax.max()), ha='right', fontsize=8)
-    ax.text(alignment, max_ylim*0.60, 'Lowest High: {:.0f}'.format(window.tmax.min()), ha='right', fontsize=8)
-
+    ax.text(alignment, max_ylim*0.95, 'Today\'s High: {:.0f}'.format(high), ha='right', fontsize=8)
+    ax.text(alignment, max_ylim*0.90, 'Average High: {:.1f}'.format(window.tmax.mean()), ha='right', fontsize=8)
+    ax.text(alignment, max_ylim*0.85, 'Percentile: {:.1f}'.format(stats.stats.percentileofscore(window.tmax, high, 'mean')), ha='right', fontsize=8)
+    ax.text(alignment, max_ylim*0.75, 'All Time High: {:.0f}'.format(window.tmax.max()), ha='right', fontsize=8)
+    ax.text(alignment, max_ylim*0.70, 'Lowest High: {:.0f}'.format(window.tmax.min()), ha='right', fontsize=8)
+    
     # Finishing touches
     ax.set_ylabel("Occurrences in Last 30 Years")
     ax.set_xlabel("Daily High (F)")
     window['date'] = pd.to_datetime(window['date'])
-    start = window['date'].iloc[0]
-    end = window['date'].iloc[-1]
     ax.set_title("Daily Highs for %d/%d to %d/%d" %(start.month,start.day,end.month,end.day))
     plt.savefig('seasonable.png', bbox_inches='tight')
 
-# using open-meteo.com api for seatac coordinates
-forecast = pd.read_json('https://api.open-meteo.com/v1/forecast?latitude=47.4446&longitude=-122.3144&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles')
-day = datetime.strptime(forecast['daily']['time'][0], '%Y-%m-%d').timetuple().tm_yday
-# rounded accourding to https://www.nws.noaa.gov/directives/sym/pd01013002curr.pdf
-high = math.floor(forecast['daily']['temperature_2m_max'][0] + 0.5)
-plot(day, high, pd.read_csv('data/seatac_cleaned.csv'))
+def main():
+   # using open-meteo.com api for seatac coordinates
+    forecast = pd.read_json('https://api.open-meteo.com/v1/forecast?latitude=47.4446&longitude=-122.3144&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles')
+    date = datetime.strptime(forecast['daily']['time'][0], '%Y-%m-%d').timetuple()
+    # rounded accourding to https://www.nws.noaa.gov/directives/sym/pd01013002curr.pdf
+    high = math.floor(forecast['daily']['temperature_2m_max'][0] + 0.5)
+    # making plot
+    plot(date.tm_year, date.tm_mon, date.tm_mday, high, pd.read_csv('seatac_cleaned.csv'))
+
+
+if __name__ == '__main__':
+    main()
