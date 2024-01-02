@@ -85,7 +85,7 @@ def main():
     # rounded accourding to https://www.nws.noaa.gov/directives/sym/pd01013002curr.pdf
     high = math.floor(forecast['daily']['temperature_2m_max'][0] + 0.5)
     # making plot
-    plot(date.tm_year, date.tm_mon, date.tm_mday, high, pd.read_csv('seatac_cleaned.csv'))
+    plot(date.tm_year, date.tm_mon, date.tm_mday, high, pd.read_csv('data/seatac_cleaned.csv'))
 
 
 if __name__ == '__main__':
