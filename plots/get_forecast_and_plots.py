@@ -82,7 +82,7 @@ def main():
     urls = ['https://api.open-meteo.com/v1/forecast?latitude=47.6871&longitude=-122.2566&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles', 'https://api.open-meteo.com/v1/forecast?latitude=42.3651&longitude=-71.0178&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles']
     for path, loc, url in zip(paths, locs, urls):
         # using open-meteo.com api for seatac coordinates
-        forecast = pd.read_json('https://api.open-meteo.com/v1/forecast?latitude=47.4446&longitude=-122.3144&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles')
+        forecast = pd.read_json(url)
         date = datetime.strptime(forecast['daily']['time'][0], '%Y-%m-%d').timetuple()
         # rounded accourding to https://www.nws.noaa.gov/directives/sym/pd01013002curr.pdf
         high = math.floor(forecast['daily']['temperature_2m_max'][0] + 0.5)
