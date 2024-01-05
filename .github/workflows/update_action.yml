@@ -1,6 +1,6 @@
 on:
  schedule:
-   - cron: "0 10 * * *"
+   - cron: "*/5 * * * *"
 
 name: Seattle weather update
 
@@ -22,10 +22,10 @@ jobs:
       - name: install python packages
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r plots/requirements.txt
 
       - name: execute py script
-        run: python get_forecast_and_plot.py
+        run: python get_forecast_and_plots.py
         
       - name: Commit graphs
         uses: stefanzweifel/git-auto-commit-action@v5
