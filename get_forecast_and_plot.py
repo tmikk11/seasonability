@@ -1,19 +1,9 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 # packages
 import pandas as pd
 from scipy import stats
 import matplotlib.pyplot as plt
 from datetime import datetime
 import math
-
-
-# In[2]:
-
 
 # given day x, returns dataframe of all tmin and tmix of 15 day window centered around x in past 30 years
 def get_window(year, mon, mday, hist):
@@ -44,10 +34,6 @@ def get_window(year, mon, mday, hist):
         end = window[window['month'] == mon+1]['date'].max()
     
     return window, datetime.strptime(start, "%Y-%m-%d"), datetime.strptime(end, "%Y-%m-%d")
-
-
-# In[19]:
-
 
 def plot(year, mon, mday, high, hist, loc):
     # Getting info we need
@@ -90,12 +76,8 @@ def plot(year, mon, mday, high, hist, loc):
     ax.set_title("Daily Highs for %d/%d to %d/%d in %s" %(start.month,start.day,end.month,end.day,loc))
     plt.savefig(loc+'.png', bbox_inches='tight')
 
-
-# In[28]:
-
-
 def main():
-    paths = ['seattle_sand_point_cleaned.csv', 'boston_logan_cleaned.csv']
+    paths = ['data/seattle_sand_point_cleaned.csv', 'data/boston_logan_cleaned.csv']
     locs = ['Seattle', 'Boston']
     urls = ['https://api.open-meteo.com/v1/forecast?latitude=47.6871&longitude=-122.2566&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles', 'https://api.open-meteo.com/v1/forecast?latitude=42.3651&longitude=-71.0178&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&forecast_days=1&timezone=America%2FLos_Angeles']
     for path, loc, url in zip(paths, locs, urls):
@@ -107,15 +89,9 @@ def main():
         # making plot
         plot(date.tm_year, date.tm_mon, date.tm_mday, high, pd.read_csv(path), loc)
 
-
-# In[29]:
-
-
 if __name__ == '__main__':
     main()
 
-
-# In[ ]:
 
 
 
