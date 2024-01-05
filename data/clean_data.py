@@ -1,21 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[41]:
-
-
-# this notebook cleans data, adds helpful columns, saves as .csv for past 30 years of data
-
-
-# In[42]:
-
-
 # packages
 import pandas as pd
-
-
-# In[43]:
-
 
 # data is last 30 years of daily highs, mins, and precipitation 
 # for Boston (Logan) and Seattle (Sand Point) 
@@ -67,8 +51,6 @@ seattle.at[10490,'tmax'] = 57.0
 boston.to_csv('boston_logan_cleaned.csv', index=False)
 seattle.to_csv('seattle_sand_point_cleaned.csv', index=False)
 
-
-# In[ ]:
 
 
 
