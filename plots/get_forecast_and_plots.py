@@ -74,7 +74,7 @@ def plot(year, mon, mday, high, hist, loc):
     ax.set_xlabel("Daily High (F)")
     window['date'] = pd.to_datetime(window['date'])
     ax.set_title("Daily Highs for %d/%d to %d/%d in %s" %(start.month,start.day,end.month,end.day,loc))
-    plt.savefig(loc+'.png', bbox_inches='tight')
+    plt.savefig('plots/'+loc+'.png', bbox_inches='tight')
 
 def main():
     paths = ['data/seattle_sand_point_cleaned.csv', 'data/boston_logan_cleaned.csv']
