@@ -2,7 +2,7 @@ on:
  schedule:
    - cron: "*/5 * * * *"
 
-name: Seattle weather update
+name: Weather plots update
 
 jobs:
   render:
@@ -25,7 +25,7 @@ jobs:
           pip install -r plots/requirements.txt
 
       - name: execute py script
-        run: python get_forecast_and_plots.py
+        run: python plots/get_forecast_and_plots.py
         
       - name: Commit graphs
         uses: stefanzweifel/git-auto-commit-action@v5
