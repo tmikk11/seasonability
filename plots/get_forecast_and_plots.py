@@ -45,12 +45,11 @@ def plot(year, mon, mday, high, hist, loc):
     ax.spines['top'].set_visible(False)
 
     # Plotting histogram    
-    b = list(range(int(window.tmax.min()), int(max(window.tmax.max(), high)+2)))
-    # Colormap for the matches
-    if high > window.tmax.max():
+    if (high > window.tmax.max()) or (high < window.tmax.min()):
         w = pd.concat([window.tmax, pd.Series(high)])
     else:
         w = window.tmax
+    b = list(range(int(w.min()), int(w.max()+2)))
     n, bins, patches = ax.hist(w, bins=b, alpha=1, align='left', facecolor='blue', edgecolor='white', linewidth=0.5)
     for i, patch in enumerate(patches):
         if bins[i] == high:
@@ -58,7 +57,7 @@ def plot(year, mon, mday, high, hist, loc):
         else:
             patch.set_facecolor(plt.cm.viridis(stats.stats.percentileofscore(w, bins[i], 'mean')/100))
 
-    # Fixing plot limites
+    # Fixing plot limits
     min_ylim, max_ylim = plt.ylim()
 
     # Text stats
