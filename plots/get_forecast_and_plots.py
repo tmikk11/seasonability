@@ -44,22 +44,24 @@ def plot(year, mon, mday, high, hist, loc):
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
 
-    # Plotting histogram    
+    # Plotting histogram   
     if (high > window.tmax.max()) or (high < window.tmax.min()):
         w = pd.concat([window.tmax, pd.Series(high)])
+        record = True
     else:
         w = window.tmax
+        record = False
     b = list(range(int(w.min()), int(w.max()+2)))
     n, bins, patches = ax.hist(w, bins=b, alpha=1, align='left', facecolor='blue', edgecolor='white', linewidth=0.5)
+    min_ylim, max_ylim = plt.ylim()
     for i, patch in enumerate(patches):
         if bins[i] == high:
+            if record:
+                ax.text((w.max()+w.min())/2, max_ylim*0.4,'NEW RECORD!!!', ha='center',fontsize=24,alpha=0.5,c='k')
             patch.set_facecolor('red')
         else:
-            patch.set_facecolor(plt.cm.viridis(stats.stats.percentileofscore(w, bins[i], 'mean')/100))
-
-    # Fixing plot limits
-    min_ylim, max_ylim = plt.ylim()
-
+            patch.set_facecolor(plt.cm.viridis(stats.stats.percentileofscore(w, bins[i], 'mean')/100))    
+    
     # Text stats
     alignment = max(high, window.tmax.max())+1
     ax.text(alignment, max_ylim*0.95, 'Today\'s High: {:.0f}'.format(high), ha='right', fontsize=8)
@@ -71,7 +73,6 @@ def plot(year, mon, mday, high, hist, loc):
     # Finishing touches
     ax.set_ylabel("Occurrences in Last 30 Years")
     ax.set_xlabel("Daily High (F)")
-    window['date'] = pd.to_datetime(window['date'])
     ax.set_title("Daily Highs for %d/%d to %d/%d in %s" %(start.month,start.day,end.month,end.day,loc))
     plt.savefig('plots/'+loc+'.png', bbox_inches='tight')
 
