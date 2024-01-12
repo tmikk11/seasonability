@@ -57,7 +57,7 @@ def plot(year, mon, mday, high, hist, loc):
     for i, patch in enumerate(patches):
         if bins[i] == high:
             if record:
-                ax.text((w.max()+w.min())/2, max_ylim*0.4,'NEW RECORD!!!', ha='center',fontsize=24,alpha=0.5,c='k')
+                ax.text((w.max()+w.min())/2,max_ylim*0.4,'NEW RECORD!!!',ha='center',fontsize=24,alpha=0.75,c='k',fontweight='bold')
             patch.set_facecolor('red')
         else:
             patch.set_facecolor(plt.cm.viridis(stats.stats.percentileofscore(w, bins[i], 'mean')/100))    
